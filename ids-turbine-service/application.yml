@@ -1,0 +1,42 @@
+spring:
+    profiles:
+        active: singlehost
+        
+server:
+    port: ${ids-turbine-service.port}
+    
+turbine:
+    appConfig: ids-oauth2-service,ids-user-service,ids-role-service
+    #appConfig: oauth2-service,user-service,role-service,group-service,client-service
+    #clusterNameExpression: 'default'
+    aggregator:
+        clusterConfig: IDS-OAUTH2-SERVICE,IDS-USER-SERVICE,IDS-ROLE-SERVICE
+        #clusterConfig: OAUTH2-SERVICE,USER-SERVICE,ROLE-SERVICE,GROUP-SERVICE,CLIENT-SERVICE
+    instanceUrlSuffix: /admin/hystrix.stream
+    
+management:
+    context-path: /admin
+
+info:
+    app:
+        name: ${spring.application.name}
+            
+    
+endpoints:
+    sensitive: false        
+    enabled: true
+    health:
+        sensitive: false
+
+eureka:
+    instance:
+#        preferIpAddress: true
+        statusPageUrlPath: ${management.context-path}/info
+        healthCheckUrlPath: ${management.context-path}/health
+        metadataMap:
+            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}      
+    client:
+        registerWithEureka: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://${ids-eureka-service.host}:${ids-eureka-service.port}/eureka/  

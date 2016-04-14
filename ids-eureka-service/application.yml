@@ -1,0 +1,41 @@
+spring:
+    profiles:
+        active: singlehost
+server:
+    port: ${ids-eureka-service.port}
+    
+#debug: true
+logging:
+    level:
+        org:
+            springframework:
+                security: INFO
+info:
+  app:
+    name: ${spring.application.name}   
+    
+    
+endpoints:
+        sensitive: false        
+        enabled: true
+        health:
+          sensitive: false
+    
+management:
+    contextPath: /admin
+    #security:
+    #  enabled: false
+    
+eureka:
+    instance:
+#       preferIpAddress: true
+        statusPageUrlPath: ${management.context-path}/info
+        healthCheckUrlPath: ${management.context-path}/health
+        hostname: ${ids-eureka-service.host}
+        metadataMap:
+            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    client:
+        registerWithEureka: false
+        fetchRegistry: false
+        serviceUrl:
+            defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/

@@ -1,0 +1,9 @@
+ids:
+    clientUrl: http://localhost:8087
+    invokeCount: 5
+    userName: vikrant
+    userPassword: welcome1
+    
+spring:
+    profiles:
+        active: firefox,reactive

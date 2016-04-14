@@ -1,0 +1,153 @@
+spring:    
+    oauth2:
+        client:
+            clientId: ${spring.application.name}
+            clientSecret: welcome1
+            accessTokenUri: http://${oauth2-service-url}/oauth/token
+            userAuthorizationUri: http://${oauth2-service-url}/oauth/authorize
+#            clientAuthenticationScheme: form
+            clientAuthenticationScheme: header            
+        sso:
+            loginPath: /login
+
+jms:
+    queue:
+        name: ${spring.application.name}
+    broker:
+        url: tcp://${ids-activemq-service.host}:${ids-activemq-service.tcpport}
+
+management:
+    context-path: /admin
+info:
+    app:
+        name: ${spring.application.name}
+
+#debug: true
+
+#logging:
+#    level:
+#        root: WARN
+#    path: logs/
+
+endpoints:
+    sensitive: false
+    enabled: true
+    health:
+        sensitive: false
+    beans:
+        sensitive: false
+        
+---        
+spring:
+    profiles: hsqldb
+    datasource:
+        driver-class-name: org.hsqldb.jdbc.JDBCDriver
+        url: jdbc:hsqldb:hsql://${ids-db-service.host}:${ids-db-service.tcpport}/idsdb       
+        username: sa
+        password:  
+        datasource:
+            continueOnError: true        
+---        
+spring:
+    profiles: h2db
+    datasource:
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:tcp://${ids-db-service.host}:${ids-db-service.tcpport}//tmp/h2data/mycloud/${spring.application.name};DB_CLOSE_DELAY=-1        
+        username: sa
+        password: 
+        datasource:
+            continueOnError: true
+---        
+spring:
+    profiles: oracledb
+    datasource:
+        driver-class-name: oracle.jdbc.driver.OracleDriver
+        url: jdbc:oracle:thin:@192.168.56.2:1521:myclouddb
+        username: mycloud
+        password: mycloudpass
+        datasource:
+            continueOnError: true
+            
+---
+spring:
+    profiles: [jdbcToken,sso]
+    oauth2:
+        resource:
+            userInfoUri: http://${oauth2-service-url}/user
+            preferTokenInfo: false
+            checkTokenUri: http://${oauth2-service-url}/oauth/check_token
+---
+
+spring:
+    profiles: jwt
+    #oauth2:
+        #resource:
+            #jwt:
+                #key-uri: http://${ids.server.host}:8086/oauth/token_key
+                #key-value:
+oauth2:
+    jwt:
+        sharedKey: "vikrant"
+       
+---
+spring:
+    profiles: discovery
+    
+eureka:
+    instance:
+#        preferIpAddress: true
+        statusPageUrlPath: ${management.context-path}/info
+        healthCheckUrlPath: ${management.context-path}/health
+        leaseRenewalIntervalInSeconds: 5
+        metadataMap:
+            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    client:
+        registerWithEureka: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://${ids-eureka-service.host}:${ids-eureka-service.port}/eureka/
+ribbon:
+    eureka:
+        enabled: true
+---
+spring:
+    profiles: routing
+    
+ids:
+    server:
+        url: ${ids-zuul-service.host}:${ids-zuul-service.port}/    
+oauth2-service-url: ${ids.server.url}ids-oauth2-service
+
+---    
+spring:
+    profiles: default
+
+ids:
+    server:
+        url: ""            
+oauth2-service-url: ${ids-oauth2-service.host}:${ids-oauth2-service.port}
+                
+ribbon:
+    eureka:
+        enabled: false
+ids-oauth2-service:
+    ribbon:
+        listOfServers: ${ids-oauth2-service.host}:${ids-oauth2-service.port}
+ids-user-service:
+    ribbon:
+        listOfServers: ${ids-user-service.host}:${ids-user-service.port}
+ids-role-service:
+    ribbon:
+        listOfServers: ${ids-role-service.host}:${ids-role-service.port}
+ids-group-service:
+    ribbon:
+        listOfServers: ${ids-group-service.host}:${ids-group-service.port}
+ids-account-service:
+    ribbon:
+        listOfServers: ${ids-account-service.host}:${ids-account-service.port}
+ids-client-service:
+    ribbon:
+        listOfServers: ${ids-client-service.host}:${ids-client-service.port}
+ids-activemq-service:
+    ribbon:
+        listOfServers: ${ids-activemq-service.host}:${ids-activemq-service.port}

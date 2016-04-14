@@ -1,0 +1,93 @@
+server:
+    port: ${ids-zuul-service.port}
+    
+endpoints:
+    sensitive: false        
+    enabled: true
+    health:
+        sensitive: false
+    routes:
+        sensitive: false
+        
+hystrix:
+    command:
+        default:
+            execution:
+                timeout:
+                    enabled: false
+                isolation:
+                    strategy: THREAD
+                    thread:
+                        timeoutInMilliseconds : 20000
+
+# Global - affects every Ribbon instances (not only your services but also Eureka client!)
+#ribbon.ReadTimeout = 6000
+
+# Per service
+#<clientName>.ribbon.ReadTimeout = 60000
+        
+ribbon:
+    eureka:
+        enabled: true
+    
+            
+#zuul:
+#    routes:
+#        oauth2-service: /mycloud/**
+        #user-service:   /mycloud/**
+        #role-service: /mycloud/**
+        #group-service: /mycloud/**
+        #account-service: /mycloud/**
+        
+#spring:
+#    oauth2:
+        #sso:
+            #home:
+                #secure: false
+                #path: /,/**/*.html
+#        client:
+#            clientId: ${spring.application.name}
+#            clientSecret: welcome1
+#            accessTokenUri: http://localhost:8086/oauth/token
+#            userAuthorizationUri: http://localhost:8086/oauth/authorize
+#            clientAuthenticationScheme: header
+#        resource:
+#            userInfoUri: http://localhost:8086/user
+#            preferTokenInfo: false
+    
+#debug: true
+logging:
+    level:
+        org:
+            springframework: INFO
+    
+management:
+    context-path: /admin
+    
+eureka:
+    instance:
+#        preferIpAddress: true
+        statusPageUrlPath: ${management.context-path}/info
+        healthCheckUrlPath: ${management.context-path}/health
+        leaseRenewalIntervalInSeconds: 5
+        metadataMap:
+            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}      
+    client:
+        #registerWithEureka: false
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://${ids-eureka-service.host}:${ids-eureka-service.port}/eureka/
+#---            
+#spring:
+#    profiles: jwt
+    #oauth2:
+        #resource:
+            #jwt:
+                #key-uri: http://localhost:8086/oauth/token_key
+                #key-value:
+#oauth2:
+#    jwt:
+#        sharedKey: "vikrant"
+        
+
+            

@@ -1,0 +1,45 @@
+info:
+    app:
+        name: ${spring.application.name}                
+endpoints:
+    sensitive: false
+    enabled: true
+    health:
+        sensitive: false
+management:
+    context-path: /admin
+    
+userQ:
+    name: ids-user-service
+oauth2Q:
+    name: ids-oauth2-service
+roleQ:
+    name: ids-role-service
+groupQ:
+    name: ids-group-service
+accountQ:
+    name: ids-account-service
+    
+
+server:
+    port: ${ids-activemq-service.port}
+jms:
+    server:
+        port: ${ids-activemq-service.tcpport}
+    persistence:
+        directory: /tmp/activemq-data
+    url:
+        scheme: tcp
+        value: tcp://${ids-activemq-service.host}:${jms.server.port}?create=false,broker.persistent=false
+
+eureka:
+    instance:
+#        preferIpAddress: true
+        statusPageUrlPath: ${management.context-path}/info
+        healthCheckUrlPath: ${management.context-path}/health
+        leaseRenewalIntervalInSeconds: 5
+        metadataMap:
+            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    client:
+        serviceUrl:
+            defaultZone: http://${ids-eureka-service.host}:${ids-eureka-service.port}/eureka/
