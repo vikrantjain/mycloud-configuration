@@ -1,6 +1,6 @@
 ids:
     clientUrl: http://localhost:8087
-    invokeCount: 5
+    invokeCount: 10
     userName: vikrant
     userPassword: welcome1
     
