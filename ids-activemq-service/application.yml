@@ -27,7 +27,7 @@ jms:
     server:
         port: ${ids-activemq-service.tcpport}
     persistence:
-        directory: /tmp/activemq-data
+        directory: /tmp/mycloud/activemq-data
     url:
         scheme: tcp
         value: tcp://${ids-activemq-service.host}:${jms.server.port}?create=false,broker.persistent=false

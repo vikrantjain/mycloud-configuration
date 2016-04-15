@@ -52,7 +52,7 @@ spring:
     profiles: h2db
     datasource:
         driver-class-name: org.h2.Driver
-        url: jdbc:h2:tcp://${ids-db-service.host}:${ids-db-service.tcpport}//tmp/h2data/mycloud/${spring.application.name};DB_CLOSE_DELAY=-1        
+        url: jdbc:h2:tcp://${ids-db-service.host}:${ids-db-service.tcpport}//tmp/mycloud/h2data/${spring.application.name};DB_CLOSE_DELAY=-1        
         username: sa
         password: 
         datasource:
